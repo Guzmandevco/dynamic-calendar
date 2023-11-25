@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+:root{
+  --white: #EBE8E1;
+  --blue: #283470;
+  --black: #28292B;
+}
+body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--white);
+  min-height: 100vh;
+  padding: .75rem;
+}
+.calendar{
+  width: 100%;
+  min-height: 520px;
+  max-width: 520px;
+  border-radius: .75rem;
+  box-shadow: -10px 15px 34px rgba(0,0,0,.18);
+}
+.calendar .head{
+  display: flex;
+  padding: .75rem 1rem;
+  background: var(--black);
+  justify-content: space-between;
+  align-items: center;
+}
+.head .uil {
+  font-size: 24px;
+  cursor: pointer;
+  transition: .3s all ease;
+}
+.head .uil,
+.calendar .center span{
+   color: var(--white)
+}
+#days-name div{
+  color: var(--blue);
+}
+#days-name div.red{
+  color: red;
+}
+.calendar .center span{
+  display: block;
+  text-align: center;
+  font-weight: 500;
+}
+.calendar #month{
+  font-weight: 300;
+}
+.days{
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  align-items: center;
+  gap: 5px;
+  padding: .3rem;
+}
+.days .day{
+  padding: 1.25rem .75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.days .day.today{
+  color: var(--white);
+  position: relative;
+  z-index: 2;
+}
+.days .day.today::after{
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--blue);
+  z-index: -1;
+  text-align: center;
+}
+.day.shadow{
+  color: rgba(0,0,0,.18);
+}
