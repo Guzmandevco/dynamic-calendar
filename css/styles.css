@@ -85,3 +85,13 @@ body{
 .day.shadow{
   color: rgba(0,0,0,.18);
 }
+
+.day.diurnal{
+  background: #C2C979; /* diurnal days */
+}
+.day.nocturnal {
+  background: #497448; /* nocturnal days */
+}
+.day.resting {
+  background: #385194; /* resting days */
+}

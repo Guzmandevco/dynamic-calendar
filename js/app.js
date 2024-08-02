@@ -4,13 +4,41 @@ const yearElement = document.getElementById('year');
 const daysElement = document.getElementById('days');
 const nextBtn = document.getElementById('next-month');
 const previousBtn = document.getElementById('previous-month');
+
 let currentYear;
 let currentMonth;
 let currentDay;
+let programmationPerMonth;
+let programmationLastDayOfMonth;
+
+/* available programming */
+const programming = [
+  "1roDia",
+  "2doDia",
+  "1roNoche",
+  "2doNoche",
+  "1erDescanso",
+  "2doDescanso"
+  ]
+  
+  const listOfMonths = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+];
 
 // ---------- render days of current month --------- //
 function renderDaysOfMonth(Month) {
-  const now = new Date;
+  const now = new Date();
   let day = now.getDate();
   let month = now.getMonth();
   let year = now.getFullYear();
@@ -21,15 +49,16 @@ function renderDaysOfMonth(Month) {
     html += `<div class="day shadow">${daysPrev - (i-1)}</div>`;
   }
   for (let j = 1; j <= days; j++) {
-    html += `<div class="day ${((day === j) && (currentMonth == month) && (currentYear === year)) ? 'today' : '' }">${j}</div>`;
+    html += `<div class="day ${((day === j) && (currentMonth == month) && (currentYear === year)) ? 'today' :  (programmationPerMonth[j] == "1roDia" || programmationPerMonth[j] == "2doDia") ? 'diurnal' : programmationPerMonth[j] == '1roNoche' || programmationPerMonth[j] == "2doNoche" ? 'nocturnal' : programmationPerMonth[j] == '1erDescanso' || programmationPerMonth[j] == '2doDescanso' ? 'resting' : '' }">${j}</div>`;
   }
+  
   daysElement.innerHTML = html;
 }
 
 
 function startDay() {
   let now = new Date(currentYear, currentMonth, 1);
-  return ((now.getDay() -1 )  === -1) ? 6 : now.getDay();
+  return ((now.getDay()) == 0) ? 0 : now.getDay();
 }
 
 // ---------- get total  days of current month --------- //
@@ -51,21 +80,8 @@ function totalDaysOfMonth(month) {
 
 // ---------- main function  --------- //
 function main(cyear, cmonth, cday) {
-  const listOfMonths = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December"
-];
-  const today = new Date(cyear, cmonth, cday);
+  
+  const today = new Date(cyear, cmonth, 1 );
   const day = today.getDate();
   const month = today.getMonth();
   const year = today.getFullYear();
@@ -91,6 +107,51 @@ function changeMonth(dir) {
   }
 }
 
+/* getting the programming for the current month */
+const getProgrammingPerMonth = (currentProgramation) => {
+  const today = new Date();
+  let month = today.getMonth();
+  let startDay = month !== currentMonth ? currentDay : 1;
+  let programmingDict = {};
+  let totalDays = totalDaysOfMonth(currentMonth);
+  let currentIndex = programming.indexOf(currentProgramation);
+  let nextDayIndex = currentIndex;
+  let programmingLastDay = undefined;
+  nextDayIndex += 1;
+  for (let i = startDay; i <= totalDays; i++) {
+    programmingDict[i] = programming[currentIndex % programming.length]
+    currentIndex += 1
+  }
+  programmingLastDay = programmingDict[totalDays]
+  return {programmingDict, programmingLastDay}
+}
+
+/**
+ * @param {String} lastDay programmation last day previous month
+ * @returns {String} 
+ */
+function getProgrammingFirstDayOfMonth (lastDay) {
+  let firstDay = undefined;
+  if(lastDay == "1roDia") {
+    firstDay = "2doDia"
+  } else if (lastDay == "2doDia") {
+    firstDay = "1roNoche"
+  } else if (lastDay == "1roNoche") {
+    firstDay = "2doNoche"
+  } else if (lastDay == "2doNoche") {
+    firstDay = "1erDescanso"
+  } else if (lastDay == "1erDescanso") {
+    firstDay = "2doDescanso"
+  } else if (lastDay == "2doDescanso") {
+    firstDay = "1roDia"
+  } else {
+    console.log("Unknown guest!")
+  }
+  return firstDay;
+}
+
+
+
 previousBtn.addEventListener('click', () => {
   changeMonth('left');
   main(currentYear, currentMonth, currentDay);
@@ -99,6 +160,18 @@ previousBtn.addEventListener('click', () => {
 nextBtn.addEventListener('click', () => {
   changeMonth('right');
   main(currentYear, currentMonth, currentDay);
+  let dayIndex = programming.indexOf(programmationLastDayOfMonth);
+  let programmingFirstDayNextMonth = getProgrammingFirstDayOfMonth(programmationLastDayOfMonth)
+  
+  
+  //console.log("First day september", programmingFirstDayNextMonth)
+  let {programmingDict, programmingLastDay} = getProgrammingPerMonth(programmingFirstDayNextMonth);
+  programmationPerMonth = programmingDict
+  console.log(programmationLastDayOfMonth)
+  console.log(`Programming ${listOfMonths[currentMonth]}`, programmationPerMonth)
+  //console.log("Programming Last day", programmingLastDay)
+  programmationLastDayOfMonth = programmingLastDay
+  //console.log(programmationLastDayOfMonth)
 });
 
 // ---------- calling de main function when the is loaded  --------- //
@@ -107,14 +180,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const day = today.getDate();
   const month = today.getMonth();
   const year = today.getFullYear();
+  currentDay = day;
+  currentMonth = month;
+  currentYear = year;
+  let {programmingDict, programmingLastDay} = getProgrammingPerMonth("2doNoche");
+  programmationPerMonth = programmingDict;
+  programmationLastDayOfMonth = programmingLastDay;
   main(year, month, day);
+  console.log(programmationPerMonth)
 
   /* --------- getting the current language from device of user ------ */
   let language = window.navigator.language;
-  if(language === "es-US") {
+  if(language === "en-US") {
     let items = document.getElementById('days-name');
     let all = items.querySelectorAll('div');
-    let leters = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+    let leters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     all.forEach((e, idx) => {
       e.textContent = leters[idx];
     })
