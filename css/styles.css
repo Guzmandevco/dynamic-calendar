@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Poppins", Sans-Serif;
 }
 :root{
   --white: #EBE8E1;
@@ -11,11 +12,25 @@
 }
 body{
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
   background: var(--white);
   min-height: 100vh;
   padding: .75rem;
+}
+.options {
+  width: 100%;
+  border-radius: .5rem;
+  box-shadow: -2px 3px 5px rgba(0,0,0,.75);
+  background: var(--black);
+  padding: .75rem .25rem;
+  text-align: center;
+  color: var(--white);
+}
+select {
+  width: 100%;
+  height: 2.5rem;
 }
 .calendar{
   width: 100%;
@@ -59,31 +74,47 @@ body{
   grid-template-columns: repeat(7,1fr);
   align-items: center;
   gap: 5px;
-  padding: .3rem;
+  padding: 5px;
 }
 .days .day{
-  padding: 1.25rem .75rem;
+  padding: 1.25rem .25rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #FFFF;
 }
-.days .day.today{
+.days .today{
   color: var(--white);
   position: relative;
   z-index: 2;
 }
-.days .day.today::after{
+.days .today::after{
   content: '';
   position: absolute;
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: var(--blue);
+  background: #98FB98;
   z-index: -1;
   text-align: center;
 }
-.day.shadow{
-  color: rgba(0,0,0,.18);
+.days .today.diurnal::after{
+  background: #FFECB3;
+}
+.days .today.nocturnal::after{
+  background: #B0C4DE;
+}
+.days .today.resting::after{
+  background: #98FB98;
+}
+.days .today.diurnal,
+.today.nocturnal,
+.today.resting{
+  font-weight: 500;
+  color: var(--black);
+}
+.previous{
+  color: rgba(0,0,0,1.178);
 }
 
 .diurnal {
@@ -99,4 +130,13 @@ body{
 .resting {
   background-color: #32CD32; /* Color principal para los días de descanso */
   border-color: #98FB98; /* Color complementario para los días de descanso */
+}
+
+footer {
+  text-align: center;
+}
+.options label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 500;
 }

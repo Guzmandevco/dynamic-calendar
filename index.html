@@ -12,6 +12,17 @@
   <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
+  <div class="options">
+    <label>Work scheduling</label>
+    <select id="options-select">
+      <option selected value="1roDia">1ro De Dia</option>
+      <option value="2doDia">2do De Dia</option>
+      <option value="1roNoche">1ro De Noche</option>
+      <option value="2doNoche">2do De Noche</option>
+      <option value="1erDescanso">1er Descanso</option>
+      <option value="2doDescanso">2do Descanso</option>
+    </select>
+  </div>
   <main class="calendar">
     <div class="head">
       <div id="previous-month">
@@ -38,6 +49,9 @@
       <!--- content generated dinamically --->
     </div>
   </main>
+    <footer>
+      <p>&copy; 2024 All rights reserved | Powered By <a href="#">Carlos Alberto Guzmán</a></p>
+    </footer>
   <!-- Project -->
   <script src="./js/app.js"></script>
 </body>

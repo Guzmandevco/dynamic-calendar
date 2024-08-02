@@ -4,12 +4,15 @@ const yearElement = document.getElementById('year');
 const daysElement = document.getElementById('days');
 const nextBtn = document.getElementById('next-month');
 const previousBtn = document.getElementById('previous-month');
+const selectElement = document.getElementById('options-select');
 
 let currentYear;
 let currentMonth;
 let currentDay;
 let programmationPerMonth;
 let programmationLastDayOfMonth;
+let currentProgramation;
+let helpMessageWasShowed = false;
 
 /* available programming */
 const programming = [
@@ -36,10 +39,30 @@ const listOfMonths = [
   "December"
 ];
 
+function retrieveCurrentProgramation (programming) {
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.getMonth();
+  const year = today.getFullYear();
+  currentDay = day;
+  currentMonth = month;
+  currentYear = year;
+  let {programmingDict, programmingLastDay} = getProgrammingPerMonth(programming);
+  programmationPerMonth = programmingDict;
+  programmationLastDayOfMonth = programmingLastDay;
+  currentProgramation = programming;
+  main(year, month, day);
+  return currentProgramation;
+}
+
 /* get the css class for each day */
 function getDayClass(j, day, month, year, currentMonth, currentYear, programmationPerMonth) {
-  if (day === j && currentMonth === month && currentYear === year ) {
-    return 'today';
+  if ((day === j && currentMonth === month && currentYear === year) && (programmationPerMonth[j] == "1roDia" || programmationPerMonth[j] == "2doDia")) {
+    return 'today diurnal';
+  } else if ((day === j && currentMonth === month && currentYear === year) && (programmationPerMonth[j] == "1roNoche" || programmationPerMonth[j] == "2doNoche") ) {
+    return 'today nocturnal';
+  } else if ((day === j && currentMonth === month && currentYear === year) && (programmationPerMonth[j] == "1erDescanso" || programmationPerMonth[j] == "2doDescanso") ) {
+    return 'today resting';
   } else if (programmationPerMonth[j] === "1roDia" || programmationPerMonth[j] === "2doDia") {
     return 'diurnal';
   } else if (programmationPerMonth[j] === '1roNoche' || programmationPerMonth[j] === "2doNoche") {
@@ -61,7 +84,7 @@ function renderDaysOfMonth(Month) {
   let daysPrev = totalDaysOfMonth(currentMonth-1);
   let html = '';
   for(let i = startDay(); i > 0; i--) {
-    html += `<div class="day shadow">${daysPrev - (i-1)}</div>`;
+    html += `<div class="day previous">${daysPrev - (i-1)}</div>`;
   }
 
 for (let j = 1; j <= days; j++) {
@@ -87,7 +110,7 @@ function totalDaysOfMonth(month) {
     return 31;
   } else if(daysOfMonths['30'].indexOf(month) != -1) {
     return 30;
-  } if(isLeap(currentYear)) {
+  } if(isLeap(currentYear) && currentMonth === 1) {
     return 29;
   } else {
     return 28;
@@ -132,15 +155,14 @@ function changeMonth(dir) {
 
 /* getting the programming for the current month */
 const getProgrammingPerMonth = (currentProgramation) => {
+  let programmingDict = {};
   const today = new Date();
   let month = today.getMonth();
   let startDay = month === currentMonth ? currentDay : 1;
-  let programmingDict = {};
   let totalDays = totalDaysOfMonth(currentMonth);
   let currentIndex = programming.indexOf(currentProgramation);
-  let nextDayIndex = currentIndex;
   let programmingLastDay = undefined;
-  nextDayIndex += 1;
+  
   for (let i = startDay; i <= totalDays; i++) {
     programmingDict[i] = programming[currentIndex % programming.length]
     currentIndex += 1
@@ -151,7 +173,7 @@ const getProgrammingPerMonth = (currentProgramation) => {
 
 /**
  * @param {String} lastDay programmation last day previous month
- * @returns {String} 
+ * @returns {String | undefined} 
  */
 function getProgrammingFirstDayOfMonth (lastDay) {
   let firstDay = undefined;
@@ -182,7 +204,7 @@ previousBtn.addEventListener('click', () => {
 
 nextBtn.addEventListener('click', () => {
   changeMonth('right');
-  let dayIndex = programming.indexOf(programmationLastDayOfMonth);
+  //let dayIndex = programming.indexOf(programmationLastDayOfMonth);
   let programmingFirstDayNextMonth = getProgrammingFirstDayOfMonth(programmationLastDayOfMonth)
   let {programmingDict, programmingLastDay} = getProgrammingPerMonth(programmingFirstDayNextMonth);
   programmationPerMonth = programmingDict
@@ -191,6 +213,14 @@ nextBtn.addEventListener('click', () => {
 });
 
 /* calling de main function when the is loaded */
+selectElement.addEventListener("change", (e) => {
+  if(!helpMessageWasShowed) {
+    alert("Te recordamos que las casillas marcadas con amarillo\nson los turnos diurnos, las casillas marcadas con azúl\n son los turnos nocturnos y las casillas marcadas con verde\ncorresponden a los dias de descanso.")
+  }
+  retrieveCurrentProgramation(e.target.value);
+  helpMessageWasShowed = true;
+})
+
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date();
   const day = today.getDate();
@@ -199,11 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
   currentDay = day;
   currentMonth = month;
   currentYear = year;
-  let {programmingDict, programmingLastDay} = getProgrammingPerMonth("1erDescanso");
+  let {programmingDict, programmingLastDay} = getProgrammingPerMonth(selectElement.value);
   programmationPerMonth = programmingDict;
   programmationLastDayOfMonth = programmingLastDay;
   main(year, month, day);
-
+  
   /* getting the current language from device of user  */
   let language = window.navigator.language;
     let items = document.getElementById('days-name');
