@@ -86,12 +86,17 @@ body{
   color: rgba(0,0,0,.18);
 }
 
-.day.diurnal{
-  background: #C2C979; /* diurnal days */
+.diurnal {
+  background-color: #FFD700; /* Color principal para los días diurnos */
+  border-color: #FFECB3; /* Color complementario para los días diurnos */
 }
-.day.nocturnal {
-  background: #497448; /* nocturnal days */
+
+.nocturnal {
+  background-color: #1E90FF; /* Color principal para los días nocturnos */
+  border-color: #B0C4DE; /* Color complementario para los días nocturnos */
 }
-.day.resting {
-  background: #385194; /* resting days */
+
+.resting {
+  background-color: #32CD32; /* Color principal para los días de descanso */
+  border-color: #98FB98; /* Color complementario para los días de descanso */
 }

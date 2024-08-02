@@ -1,4 +1,4 @@
-// ----------- global variables --------- //
+/* global variables */
 const monthElement = document.getElementById('month');
 const yearElement = document.getElementById('year');
 const daysElement = document.getElementById('days');
@@ -19,9 +19,9 @@ const programming = [
   "2doNoche",
   "1erDescanso",
   "2doDescanso"
-  ]
-  
-  const listOfMonths = [
+]
+
+const listOfMonths = [
   "January",
   "February",
   "March",
@@ -36,7 +36,22 @@ const programming = [
   "December"
 ];
 
-// ---------- render days of current month --------- //
+/* get the css class for each day */
+function getDayClass(j, day, month, year, currentMonth, currentYear, programmationPerMonth) {
+  if (day === j && currentMonth === month && currentYear === year ) {
+    return 'today';
+  } else if (programmationPerMonth[j] === "1roDia" || programmationPerMonth[j] === "2doDia") {
+    return 'diurnal';
+  } else if (programmationPerMonth[j] === '1roNoche' || programmationPerMonth[j] === "2doNoche") {
+    return 'nocturnal';
+  } else if (programmationPerMonth[j] === '1erDescanso' || programmationPerMonth[j] === '2doDescanso') {
+    return 'resting';
+  } else {
+    return '';
+  }
+}
+
+/* render days of current month */
 function renderDaysOfMonth(Month) {
   const now = new Date();
   let day = now.getDate();
@@ -48,25 +63,26 @@ function renderDaysOfMonth(Month) {
   for(let i = startDay(); i > 0; i--) {
     html += `<div class="day shadow">${daysPrev - (i-1)}</div>`;
   }
-  for (let j = 1; j <= days; j++) {
-    html += `<div class="day ${((day === j) && (currentMonth == month) && (currentYear === year)) ? 'today' :  (programmationPerMonth[j] == "1roDia" || programmationPerMonth[j] == "2doDia") ? 'diurnal' : programmationPerMonth[j] == '1roNoche' || programmationPerMonth[j] == "2doNoche" ? 'nocturnal' : programmationPerMonth[j] == '1erDescanso' || programmationPerMonth[j] == '2doDescanso' ? 'resting' : '' }">${j}</div>`;
-  }
-  
+
+for (let j = 1; j <= days; j++) {
+  const dayClass = getDayClass(j, day, month, year, currentMonth, currentYear, programmationPerMonth);
+  html += `<div class="day ${dayClass}">${j}</div>`;
+}
   daysElement.innerHTML = html;
 }
 
-
+/* get start day of week */
 function startDay() {
   let now = new Date(currentYear, currentMonth, 1);
   return ((now.getDay()) == 0) ? 0 : now.getDay();
 }
 
-// ---------- get total  days of current month --------- //
-const daysOfMonths = {
-  '31': [0, 2, 4, 6, 7, 9, 11],
-  '30': [3, 5, 8, 10],
-}
+/* get total  days of current month */
 function totalDaysOfMonth(month) {
+  const daysOfMonths = {
+    '31': [0, 2, 4, 6, 7, 9, 11],
+    '30': [3, 5, 8, 10],
+  }
   if(daysOfMonths['31'].indexOf(month) != -1) {
     return 31;
   } else if(daysOfMonths['30'].indexOf(month) != -1) {
@@ -78,9 +94,8 @@ function totalDaysOfMonth(month) {
   }
 }
 
-// ---------- main function  --------- //
+/* main function */
 function main(cyear, cmonth, cday) {
-  
   const today = new Date(cyear, cmonth, 1 );
   const day = today.getDate();
   const month = today.getMonth();
@@ -93,17 +108,25 @@ function main(cyear, cmonth, cday) {
   renderDaysOfMonth(currentMonth);
 }
 
-// ---------- Verify if given year is leap or not  --------- //
+/* Verify if given year is leap or not */
 function isLeap(year) {
     return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
 }
 
-// ---------- change the current month when user clicked   --------- //
+/* change the current month when user clicked */
 function changeMonth(dir) {
   if(dir == 'left') {
-    currentMonth -= 1;
+    currentMonth -= 1
+    if(currentMonth < 0) {
+      currentMonth = 11
+      currentYear -= 1
+    }
   } else if(dir == 'right'){
     currentMonth += 1;
+    if(currentMonth > 11) {
+      currentMonth = 0
+      currentYear += 1
+    }
   }
 }
 
@@ -111,7 +134,7 @@ function changeMonth(dir) {
 const getProgrammingPerMonth = (currentProgramation) => {
   const today = new Date();
   let month = today.getMonth();
-  let startDay = month !== currentMonth ? currentDay : 1;
+  let startDay = month === currentMonth ? currentDay : 1;
   let programmingDict = {};
   let totalDays = totalDaysOfMonth(currentMonth);
   let currentIndex = programming.indexOf(currentProgramation);
@@ -151,30 +174,23 @@ function getProgrammingFirstDayOfMonth (lastDay) {
 }
 
 
-
 previousBtn.addEventListener('click', () => {
   changeMonth('left');
   main(currentYear, currentMonth, currentDay);
 });
 
+
 nextBtn.addEventListener('click', () => {
   changeMonth('right');
-  main(currentYear, currentMonth, currentDay);
   let dayIndex = programming.indexOf(programmationLastDayOfMonth);
   let programmingFirstDayNextMonth = getProgrammingFirstDayOfMonth(programmationLastDayOfMonth)
-  
-  
-  //console.log("First day september", programmingFirstDayNextMonth)
   let {programmingDict, programmingLastDay} = getProgrammingPerMonth(programmingFirstDayNextMonth);
   programmationPerMonth = programmingDict
-  console.log(programmationLastDayOfMonth)
-  console.log(`Programming ${listOfMonths[currentMonth]}`, programmationPerMonth)
-  //console.log("Programming Last day", programmingLastDay)
   programmationLastDayOfMonth = programmingLastDay
-  //console.log(programmationLastDayOfMonth)
+  main(currentYear, currentMonth, currentDay);
 });
 
-// ---------- calling de main function when the is loaded  --------- //
+/* calling de main function when the is loaded */
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date();
   const day = today.getDate();
@@ -183,20 +199,19 @@ document.addEventListener('DOMContentLoaded', () => {
   currentDay = day;
   currentMonth = month;
   currentYear = year;
-  let {programmingDict, programmingLastDay} = getProgrammingPerMonth("2doNoche");
+  let {programmingDict, programmingLastDay} = getProgrammingPerMonth("1erDescanso");
   programmationPerMonth = programmingDict;
   programmationLastDayOfMonth = programmingLastDay;
   main(year, month, day);
-  console.log(programmationPerMonth)
 
-  /* --------- getting the current language from device of user ------ */
+  /* getting the current language from device of user  */
   let language = window.navigator.language;
-  if(language === "en-US") {
     let items = document.getElementById('days-name');
-    let all = items.querySelectorAll('div');
-    let leters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-    all.forEach((e, idx) => {
-      e.textContent = leters[idx];
-    })
-  } 
+    let divElements = items.querySelectorAll('div');
+    if(language === "es-US" || language === "es-ES") {
+      let chars = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+      divElements.forEach((element, index) => {
+        element.textContent = chars[index];
+      })
+    } 
 });
