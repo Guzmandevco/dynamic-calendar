@@ -19,6 +19,10 @@ body{
   min-height: 100vh;
   padding: .75rem;
 }
+a, ul, li {
+  text-decoration: none;
+  list-style: none;
+}
 .options {
   width: 100%;
   border-radius: .5rem;
@@ -57,9 +61,6 @@ select {
 }
 #days-name div{
   color: var(--blue);
-}
-#days-name div.red{
-  color: red;
 }
 .calendar .center span{
   display: block;
@@ -139,4 +140,7 @@ footer {
   display: block;
   margin-bottom: 1rem;
   font-weight: 500;
+}
+footer a {
+  color: #5b5252
 }

@@ -56,18 +56,18 @@ function retrieveCurrentProgramation (programming) {
 }
 
 /* get the css class for each day */
-function getDayClass(j, day, month, year, currentMonth, currentYear, programmationPerMonth) {
-  if ((day === j && currentMonth === month && currentYear === year) && (programmationPerMonth[j] == "1roDia" || programmationPerMonth[j] == "2doDia")) {
+function getDayClass(index, day, month, year, currentMonth, currentYear, programmationPerMonth) {
+  if ((day === index && currentMonth === month && currentYear === year) && (programmationPerMonth[index] == "1roDia" || programmationPerMonth[index] == "2doDia")) {
     return 'today diurnal';
-  } else if ((day === j && currentMonth === month && currentYear === year) && (programmationPerMonth[j] == "1roNoche" || programmationPerMonth[j] == "2doNoche") ) {
+  } else if ((day === index && currentMonth === month && currentYear === year) && (programmationPerMonth[index] == "1roNoche" || programmationPerMonth[index] == "2doNoche") ) {
     return 'today nocturnal';
-  } else if ((day === j && currentMonth === month && currentYear === year) && (programmationPerMonth[j] == "1erDescanso" || programmationPerMonth[j] == "2doDescanso") ) {
+  } else if ((day === index && currentMonth === month && currentYear === year) && (programmationPerMonth[index] == "1erDescanso" || programmationPerMonth[index] == "2doDescanso") ) {
     return 'today resting';
-  } else if (programmationPerMonth[j] === "1roDia" || programmationPerMonth[j] === "2doDia") {
+  } else if (programmationPerMonth[index] === "1roDia" || programmationPerMonth[index] === "2doDia") {
     return 'diurnal';
-  } else if (programmationPerMonth[j] === '1roNoche' || programmationPerMonth[j] === "2doNoche") {
+  } else if (programmationPerMonth[index] === '1roNoche' || programmationPerMonth[index] === "2doNoche") {
     return 'nocturnal';
-  } else if (programmationPerMonth[j] === '1erDescanso' || programmationPerMonth[j] === '2doDescanso') {
+  } else if (programmationPerMonth[index] === '1erDescanso' || programmationPerMonth[index] === '2doDescanso') {
     return 'resting';
   } else {
     return '';
@@ -158,6 +158,7 @@ const getProgrammingPerMonth = (currentProgramation) => {
   let programmingDict = {};
   const today = new Date();
   let month = today.getMonth();
+  //let startDay = month === currentMonth ? 1 : 1;
   let startDay = month === currentMonth ? currentDay : 1;
   let totalDays = totalDaysOfMonth(currentMonth);
   let currentIndex = programming.indexOf(currentProgramation);
@@ -204,7 +205,6 @@ previousBtn.addEventListener('click', () => {
 
 nextBtn.addEventListener('click', () => {
   changeMonth('right');
-  //let dayIndex = programming.indexOf(programmationLastDayOfMonth);
   let programmingFirstDayNextMonth = getProgrammingFirstDayOfMonth(programmationLastDayOfMonth)
   let {programmingDict, programmingLastDay} = getProgrammingPerMonth(programmingFirstDayNextMonth);
   programmationPerMonth = programmingDict
@@ -212,10 +212,11 @@ nextBtn.addEventListener('click', () => {
   main(currentYear, currentMonth, currentDay);
 });
 
-/* calling de main function when the is loaded */
+/* calling de main function when document is loaded */
 selectElement.addEventListener("change", (e) => {
   if(!helpMessageWasShowed) {
-    alert("Te recordamos que las casillas marcadas con amarillo\nson los turnos diurnos, las casillas marcadas con azúl\n son los turnos nocturnos y las casillas marcadas con verde\ncorresponden a los dias de descanso.")
+    const helpMessage = "Te recordamos que las casillas marcadas con amarillo\nson los turnos diurnos, las casillas marcadas con azúl\nson los turnos nocturnos y las casillas marcadas con verde\ncorresponden a los dias de descanso.";
+    alert(helpMessage);
   }
   retrieveCurrentProgramation(e.target.value);
   helpMessageWasShowed = true;
@@ -233,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
   programmationPerMonth = programmingDict;
   programmationLastDayOfMonth = programmingLastDay;
   main(year, month, day);
+  console.log(programmationPerMonth)
   
   /* getting the current language from device of user  */
   let language = window.navigator.language;
