@@ -6,6 +6,7 @@ const nextBtn = document.getElementById('next-month');
 const previousBtn = document.getElementById('previous-month');
 const selectElement = document.getElementById('options-select');
 
+let language = window.navigator.language;
 let currentYear;
 let currentMonth;
 let currentDay;
@@ -24,8 +25,22 @@ const programming = [
   "2doDescanso"
 ]
 
-const listOfMonths = [
-  "January",
+
+let listOfMonths = language == "es-ES" ? [
+"Enero",
+"Febrero",
+"Marzo",
+"Abril",
+"Mayo",
+"Junio",
+"Julio",
+"Agosto",
+"Septiembre",
+"Octubre",
+"Noviembre",
+"Diciembre"]
+:
+[  "January",
   "February",
   "March",
   "April",
@@ -234,16 +249,13 @@ document.addEventListener('DOMContentLoaded', () => {
   programmationPerMonth = programmingDict;
   programmationLastDayOfMonth = programmingLastDay;
   main(year, month, day);
-  console.log(programmationPerMonth)
   
-  /* getting the current language from device of user  */
-  let language = window.navigator.language;
-    let items = document.getElementById('days-name');
-    let divElements = items.querySelectorAll('div');
-    if(language === "es-US" || language === "es-ES") {
-      let chars = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
-      divElements.forEach((element, index) => {
-        element.textContent = chars[index];
-      })
-    } 
+  let items = document.getElementById('days-name');
+  let divElements = items.querySelectorAll('div');
+  if(language === "es-US" || language === "es-ES") {
+    let chars = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+    divElements.forEach((element, index) => {
+      element.textContent = chars[index];
+    })
+  } 
 });
