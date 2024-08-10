@@ -159,7 +159,7 @@ const getProgrammingPerMonth = (currentProgramation) => {
   const today = new Date();
   let month = today.getMonth();
   //let startDay = month === currentMonth ? 1 : 1;
-  let startDay = month === currentMonth ? currentDay : 1;
+  let startDay = month === currentMonth ? (currentDay - 30) : 1;
   let totalDays = totalDaysOfMonth(currentMonth);
   let currentIndex = programming.indexOf(currentProgramation);
   let programmingLastDay = undefined;
