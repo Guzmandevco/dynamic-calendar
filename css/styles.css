@@ -19,9 +19,44 @@ body{
   min-height: 100vh;
   padding: .75rem;
 }
-a, ul, li {
+
+/*a, ul, li {
   text-decoration: none;
   list-style: none;
+}*/
+.modal {
+  position: fixed;
+  z-index: 100;
+  width: calc(100% - 40px);
+  background: #FFFFFF;
+  padding: .75rem 1.125rem;
+  border-radius: .75rem;
+  box-shadow: -3px 5px 10px rgba(0,0,0, .18);
+  transition: .3s transform ease;
+  transform: translateY(-800px);
+}
+.modal.active {
+  transform: translateY(0);
+}
+.modal .close {
+  float: right;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--white);
+  text-align: center;
+  font-size: 20px;
+}
+.disclaimer {
+  display: block;
+  background: #e78c17a6;
+  color: #FFFFFF;
+}
+.modal h3 {
+  margin-top: 10px;
+}
+.modal p {
+  font-weight: 500;
 }
 .options {
   width: 100%;

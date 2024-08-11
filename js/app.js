@@ -5,6 +5,11 @@ const daysElement = document.getElementById('days');
 const nextBtn = document.getElementById('next-month');
 const previousBtn = document.getElementById('previous-month');
 const selectElement = document.getElementById('options-select');
+const modalElement = document.getElementById('modal');
+const closeModalBtn = modalElement.querySelector('span');
+const messagaElement = document.getElementById('message-element');
+
+
 
 let language = window.navigator.language;
 let currentYear;
@@ -13,7 +18,9 @@ let currentDay;
 let programmationPerMonth;
 let programmationLastDayOfMonth;
 let currentProgramation;
-let helpMessageWasShowed = false;
+let helpMessageWasShowed = getCookie("messageView") || false;
+let modalShowed = getCookie("modal") || false;
+let programmationSelected = false;
 
 /* available programming */
 const programming = [
@@ -70,6 +77,29 @@ function retrieveCurrentProgramation (programming) {
   return currentProgramation;
 }
 
+/* setting a cookie for modal and messages */
+function setCookie(name,value,days) {
+    let expires = "";
+    if (days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+
+/* get cookie */
+function getCookie(name) {
+    let nameEQ = name + "=";
+    let ca = document.cookie.split(';');
+    for(let i=0;i < ca.length;i++) {
+        let c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
 /* get the css class for each day */
 function getDayClass(index, day, month, year, currentMonth, currentYear, programmationPerMonth) {
   if ((day === index && currentMonth === month && currentYear === year) && (programmationPerMonth[index] == "1roDia" || programmationPerMonth[index] == "2doDia")) {
@@ -88,7 +118,6 @@ function getDayClass(index, day, month, year, currentMonth, currentYear, program
     return '';
   }
 }
-
 /* render days of current month */
 function renderDaysOfMonth(Month) {
   const now = new Date();
@@ -159,6 +188,7 @@ function changeMonth(dir) {
       currentMonth = 11
       currentYear -= 1
     }
+    alert("Esta acción está en desarrollo!!!, por favor vuelve a seleccionar la programación que deseas consultar.")
   } else if(dir == 'right'){
     currentMonth += 1;
     if(currentMonth > 11) {
@@ -230,8 +260,12 @@ nextBtn.addEventListener('click', () => {
 /* calling de main function when document is loaded */
 selectElement.addEventListener("change", (e) => {
   if(!helpMessageWasShowed) {
-    const helpMessage = "Te recordamos que las casillas marcadas con amarillo\nson los turnos diurnos, las casillas marcadas con azúl\nson los turnos nocturnos y las casillas marcadas con verde\ncorresponden a los dias de descanso.";
-    alert(helpMessage);
+    const ulElement = modalElement.querySelector('ul');
+    const helpMessage = "Te recordamos que las casillas marcadas con amarillo🟨\nson los turnos diurnos, las casillas marcadas con azúl🟦\nson los turnos nocturnos y las casillas marcadas con verde🟩\ncorresponden a los dias de descanso.";
+    ulElement.innerHTML = "";
+    messagaElement.innerHTML = helpMessage;
+    modalElement.classList.add("active");
+    setCookie("messageView", true, 30);
   }
   retrieveCurrentProgramation(e.target.value);
   helpMessageWasShowed = true;
@@ -257,5 +291,17 @@ document.addEventListener('DOMContentLoaded', () => {
     divElements.forEach((element, index) => {
       element.textContent = chars[index];
     })
-  } 
+  }
+  
+  setTimeout(() => {
+    if(!modalShowed) {
+      modalElement.classList.add("active");
+      setCookie("modal", true, 15);
+    }
+  }, 1000);
 });
+
+
+closeModalBtn.onclick = () => {
+  modalElement.classList.remove("active");
+}
