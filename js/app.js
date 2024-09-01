@@ -15,6 +15,7 @@ let language = window.navigator.language;
 let currentYear;
 let currentMonth;
 let currentDay;
+let selectedProgrammation = undefined;
 let programmationPerMonth;
 let programmationLastDayOfMonth;
 let currentProgramation;
@@ -267,9 +268,18 @@ selectElement.addEventListener("change", (e) => {
     modalElement.classList.add("active");
     setCookie("messageView", true, 30);
   }
+  saveToLocalStorage("programmation", e.target.value)
   retrieveCurrentProgramation(e.target.value);
   helpMessageWasShowed = true;
 })
+
+const getProgrammationFromLStorage = (key) => {
+  return localStorage.getItem(key) || "1roDia";
+}
+
+const saveToLocalStorage = (key, value) => {
+  localStorage.setItem(key, value);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date();
@@ -279,7 +289,9 @@ document.addEventListener('DOMContentLoaded', () => {
   currentDay = day;
   currentMonth = month;
   currentYear = year;
-  let {programmingDict, programmingLastDay} = getProgrammingPerMonth(selectElement.value);
+  selectedProgrammation = getProgrammationFromLStorage("programmation");
+  selectElement.value = selectedProgrammation;
+  let {programmingDict, programmingLastDay} = getProgrammingPerMonth(selectedProgrammation);
   programmationPerMonth = programmingDict;
   programmationLastDayOfMonth = programmingLastDay;
   main(year, month, day);
@@ -299,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setCookie("modal", true, 15);
     }
   }, 1000);
+  
 });
 
 

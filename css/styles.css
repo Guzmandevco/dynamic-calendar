@@ -16,6 +16,7 @@ body{
   justify-content: space-around;
   align-items: center;
   background: var(--white);
+  height: 100vh;
   min-height: 100vh;
   padding: .75rem;
 }
@@ -77,6 +78,7 @@ select {
   max-width: 520px;
   border-radius: .75rem;
   box-shadow: -10px 15px 34px rgba(0,0,0,.18);
+  margin-top: .75rem;
 }
 .calendar .head{
   display: flex;
@@ -176,6 +178,21 @@ footer {
   margin-bottom: 1rem;
   font-weight: 500;
 }
-footer a {
-  color: #5b5252
+footer,
+footer a{
+  color: #5b5252;
+}
+footer nav{
+  margin-top: 1.25rem;
+}
+footer nav ul{
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  list-style-type: none;
+  flex-wrap: wrap;
+}
+
+footer .cta__link > a{
+  color: var(--blue);
 }
