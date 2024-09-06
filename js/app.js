@@ -281,6 +281,39 @@ const saveToLocalStorage = (key, value) => {
   localStorage.setItem(key, value);
 }
 
+// get the next midnight every day
+function getNextMidNight() {
+  const now = new Date();
+  const nextMidNight = new Date();
+
+  nextMidNight.setHours(24, 0, 0, 0);
+  // set hour at 00:00:00
+  const timeUntilNextMidNight = nextMidNight - now;
+  return timeUntilNextMidNight;
+}
+
+// change the current programmation at midnight
+function changeProgAtMidnight(currentValue) {
+  let nextProg = getProgrammingFirstDayOfMonth(currentValue);
+  selectedProgrammation = nextProg;
+  saveToLocalStorage("programmation", selectedProgrammation);
+  console.log(selectedProgrammation)
+  
+  //recalculate and program again
+  const timeUntilNextMidNight = 24 * 60 * 60  * 1000; // 24 hours on miliseconds
+  setTimeout(changeProgAtMidnight, timeUntilNextMidNight);
+}
+
+function startAtMidNight() {
+  const timeUntilMidNight = getNextMidNight();
+  console.log(selectedProgrammation)
+  setTimeout(() => {
+    changeProgAtMidnight(selectedProgrammation || programming[1]);
+  }, timeUntilMidNight);
+}
+
+startAtMidNight();
+
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date();
   const day = today.getDate();
@@ -295,6 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
   programmationPerMonth = programmingDict;
   programmationLastDayOfMonth = programmingLastDay;
   main(year, month, day);
+  startAtMidNight();
   
   let items = document.getElementById('days-name');
   let divElements = items.querySelectorAll('div');
