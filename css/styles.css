@@ -20,7 +20,10 @@ body{
   min-height: 100vh;
   padding: .75rem;
 }
-
+.container {
+  max-width: 590px;
+  margin-top: 120px;
+}
 /*a, ul, li {
   text-decoration: none;
   list-style: none;
