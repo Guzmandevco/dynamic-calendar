@@ -8,7 +8,7 @@ const selectElement = document.getElementById('options-select');
 const modalElement = document.getElementById('modal');
 const closeModalBtn = modalElement.querySelector('span');
 const messagaElement = document.getElementById('message-element');
-
+const headingElement = document.getElementById("heading");
 
 
 let language = window.navigator.language;
@@ -61,6 +61,8 @@ let listOfMonths = language == "es-ES" ? [
   "November",
   "December"
 ];
+
+headingElement.textContent = (language == "es-ES") ? "Turnos Laborales" : "Work scheduling";
 
 function retrieveCurrentProgramation (programming) {
   const today = new Date();
